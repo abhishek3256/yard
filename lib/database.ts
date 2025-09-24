@@ -13,6 +13,31 @@ const dbRun = promisify(db.run.bind(db));
 const dbGet = promisify(db.get.bind(db));
 const dbAll = promisify(db.all.bind(db));
 
+// Custom wrapper functions to handle parameters correctly
+export async function dbGetWithParams(sql: string, params: any[] = []): Promise<any> {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+export async function dbAllWithParams(sql: string, params: any[] = []): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 // Custom function to run INSERT and return the lastID
 export async function dbInsert(sql: string, params: any[] = []): Promise<{ lastID: number }> {
   return new Promise((resolve, reject) => {
@@ -112,7 +137,7 @@ export async function initializeDatabase() {
 
 async function seedDatabase() {
   // Check if data already exists
-  const existingTenants = await dbAll('SELECT COUNT(*) as count FROM tenants');
+  const existingTenants = await dbAllWithParams('SELECT COUNT(*) as count FROM tenants');
   if (existingTenants[0].count > 0) {
     return; // Database already seeded
   }
@@ -127,8 +152,8 @@ async function seedDatabase() {
     ['Globex Corp', 'globex', 'free']);
 
   // Get tenant IDs
-  const acmeTenant = await dbGet('SELECT id FROM tenants WHERE slug = ?', ['acme']);
-  const globexTenant = await dbGet('SELECT id FROM tenants WHERE slug = ?', ['globex']);
+  const acmeTenant = await dbGetWithParams('SELECT id FROM tenants WHERE slug = ?', ['acme']);
+  const globexTenant = await dbGetWithParams('SELECT id FROM tenants WHERE slug = ?', ['globex']);
 
   // Insert users
   await dbInsert(`INSERT INTO users (email, password, role, tenant_id) VALUES (?, ?, ?, ?)`, 
@@ -143,4 +168,4 @@ async function seedDatabase() {
   console.log('Database seeded with default data');
 }
 
-export { db, dbRun, dbGet, dbAll };
+export { db, dbRun, dbGet, dbAll, dbGetWithParams, dbAllWithParams };

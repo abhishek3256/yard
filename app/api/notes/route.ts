@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbRun, dbAll, dbGet, dbInsert } from '@/lib/database';
+import { dbRun, dbAllWithParams, dbGetWithParams, dbInsert } from '@/lib/database';
 import { verifyToken } from '@/lib/auth';
 import { ensureDatabaseInitialized } from '@/lib/init-db';
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const notes = await dbAll(
+    const notes = await dbAllWithParams(
       'SELECT * FROM notes WHERE tenant_id = ? ORDER BY created_at DESC',
       [user.tenantId]
     );
@@ -67,13 +67,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Check subscription limits for free plan
-    const tenant = await dbGet(
+    const tenant = await dbGetWithParams(
       'SELECT subscription_plan FROM tenants WHERE id = ?',
       [user.tenantId]
     );
 
     if (tenant.subscription_plan === 'free') {
-      const noteCount = await dbGet(
+      const noteCount = await dbGetWithParams(
         'SELECT COUNT(*) as count FROM notes WHERE tenant_id = ?',
         [user.tenantId]
       );
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       [title, content, user.tenantId, user.userId]
     );
 
-    const newNote = await dbGet(
+    const newNote = await dbGetWithParams(
       'SELECT * FROM notes WHERE id = ?',
       [result.lastID]
     );

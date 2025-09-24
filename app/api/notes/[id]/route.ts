@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbGet, dbRun } from '@/lib/database';
+import { dbGetWithParams, dbRun } from '@/lib/database';
 import { verifyToken } from '@/lib/auth';
 import { ensureDatabaseInitialized } from '@/lib/init-db';
 
@@ -31,7 +31,7 @@ export async function GET(
       );
     }
 
-    const note = await dbGet(
+    const note = await dbGetWithParams(
       'SELECT * FROM notes WHERE id = ? AND tenant_id = ?',
       [params.id, user.tenantId]
     );
@@ -80,7 +80,7 @@ export async function PUT(
     }
 
     // Check if note exists and belongs to user's tenant
-    const existingNote = await dbGet(
+    const existingNote = await dbGetWithParams(
       'SELECT * FROM notes WHERE id = ? AND tenant_id = ?',
       [params.id, user.tenantId]
     );
@@ -97,7 +97,7 @@ export async function PUT(
       [title, content, params.id, user.tenantId]
     );
 
-    const updatedNote = await dbGet(
+    const updatedNote = await dbGetWithParams(
       'SELECT * FROM notes WHERE id = ?',
       [params.id]
     );
@@ -130,7 +130,7 @@ export async function DELETE(
     }
 
     // Check if note exists and belongs to user's tenant
-    const existingNote = await dbGet(
+    const existingNote = await dbGetWithParams(
       'SELECT * FROM notes WHERE id = ? AND tenant_id = ?',
       [params.id, user.tenantId]
     );

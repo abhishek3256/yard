@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbGet, dbRun } from '@/lib/database';
+import { dbGetWithParams, dbRun } from '@/lib/database';
 import { verifyToken } from '@/lib/auth';
 import { ensureDatabaseInitialized } from '@/lib/init-db';
 
@@ -40,7 +40,7 @@ export async function POST(
     }
 
     // Get tenant by slug
-    const tenant = await dbGet(
+    const tenant = await dbGetWithParams(
       'SELECT * FROM tenants WHERE slug = ?',
       [params.slug]
     );
@@ -74,7 +74,7 @@ export async function POST(
       ['pro', tenant.id]
     );
 
-    const updatedTenant = await dbGet(
+    const updatedTenant = await dbGetWithParams(
       'SELECT * FROM tenants WHERE id = ?',
       [tenant.id]
     );
