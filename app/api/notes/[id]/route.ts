@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbGetWithParams, dbRun } from '@/lib/database';
+import { dbGetWithParams, dbRunWithParams } from '@/lib/database';
 import { verifyToken } from '@/lib/auth';
 import { ensureDatabaseInitialized } from '@/lib/init-db';
 
@@ -92,7 +92,7 @@ export async function PUT(
       );
     }
 
-    await dbRun(
+    await dbRunWithParams(
       'UPDATE notes SET title = ?, content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND tenant_id = ?',
       [title, content, params.id, user.tenantId]
     );
@@ -142,7 +142,7 @@ export async function DELETE(
       );
     }
 
-    await dbRun(
+    await dbRunWithParams(
       'DELETE FROM notes WHERE id = ? AND tenant_id = ?',
       [params.id, user.tenantId]
     );

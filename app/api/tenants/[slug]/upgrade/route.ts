@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbGetWithParams, dbRun } from '@/lib/database';
+import { dbGetWithParams, dbRunWithParams } from '@/lib/database';
 import { verifyToken } from '@/lib/auth';
 import { ensureDatabaseInitialized } from '@/lib/init-db';
 
@@ -69,7 +69,7 @@ export async function POST(
     }
 
     // Upgrade to Pro plan
-    await dbRun(
+    await dbRunWithParams(
       'UPDATE tenants SET subscription_plan = ? WHERE id = ?',
       ['pro', tenant.id]
     );

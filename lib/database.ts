@@ -38,6 +38,18 @@ export async function dbAllWithParams(sql: string, params: any[] = []): Promise<
   });
 }
 
+export async function dbRunWithParams(sql: string, params: any[] = []): Promise<void> {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 // Custom function to run INSERT and return the lastID
 export async function dbInsert(sql: string, params: any[] = []): Promise<{ lastID: number }> {
   return new Promise((resolve, reject) => {
