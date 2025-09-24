@@ -1,13 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-  api: {
-    bodyParser: {
-      sizeLimit: '1mb',
-    },
-  },
+  // Remove deprecated experimental.appDir (it's now default in Next.js 14)
+  // Remove deprecated api config (not needed for App Router)
 }
 
 module.exports = nextConfig
