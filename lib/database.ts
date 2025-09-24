@@ -168,4 +168,4 @@ async function seedDatabase() {
   console.log('Database seeded with default data');
 }
 
-export { db, dbRun, dbGet, dbAll, dbGetWithParams, dbAllWithParams };
+export { db, dbRun, dbGet, dbAll };
