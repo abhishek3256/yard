@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "JWT_SECRET": "your-super-secret-jwt-key-change-in-production"
+  }
+}
